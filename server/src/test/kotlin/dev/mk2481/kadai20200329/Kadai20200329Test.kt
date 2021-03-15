@@ -1,4 +1,4 @@
-package dev.mk2481
+package dev.mk2481.kadai20200329
 
 import io.micronaut.runtime.EmbeddedApplication
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
