@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: dev.mk2481
+testFramework: junit
+sourceLanguage: kotlin
+buildTool: gradle
+features: [ annotation-api, app-name, flyway, gradle, http-client, jdbc-hikari, jooq, junit, kotlin, kotlin-application, kotlin-extension-functions, logback, netty-server, postgres, readme, shade, testcontainers, yaml ]
