@@ -7,3 +7,7 @@ datasources:
     driverClassName: org.postgresql.Driver
     username: ${DATABASE_USER}
     password: ${DATABASE_PASSWORD}
+flyway:
+  datasources:
+    default:
+      enabled: true

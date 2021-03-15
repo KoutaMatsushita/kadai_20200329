@@ -4,6 +4,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.allopen") version "1.4.31"
     id("com.github.johnrengelman.shadow") version "6.1.0"
     id("io.micronaut.application") version "1.4.2"
+    id("nu.studer.jooq") version "5.2.1"
 }
 
 version = "0.1"
@@ -37,6 +38,7 @@ dependencies {
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     runtimeOnly("org.postgresql:postgresql")
+    jooqGenerator("org.postgresql:postgresql:42.2.14")
     testImplementation("org.testcontainers:testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
@@ -50,6 +52,10 @@ java {
     sourceCompatibility = JavaVersion.toVersion("11")
 }
 
+sourceSets {
+    main.java.srcDirs += "src/main/java"
+}
+
 tasks {
     compileKotlin {
         kotlinOptions {
@@ -61,6 +67,39 @@ tasks {
             jvmTarget = "11"
         }
     }
+}
 
-
+jooq {
+    configurations {
+        main {
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.INFO
+                jdbc {
+                    driver = "org.postgresql.Driver"
+                    url = System.getenv("DATABASE_URL")
+                    user = System.getenv("DATABASE_USER")
+                    password = System.getenv("DATABASE_PASSWORD")
+                }
+                generator {
+                    name = "org.jooq.codegen.DefaultGenerator"
+                    database {
+                        name = "org.jooq.meta.postgres.PostgresDatabase"
+                        inputSchema = "public"
+                        includes = ".*"
+                        excludes = "flyway_schema_history"
+                    }
+                    strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
+                    generate {
+                        deprecated = false
+                        records = true
+                        immutablePojos = true
+                    }
+                    target {
+                        packageName = "dev.mk2481.kadai20200329.db"
+                        directory = "src/main/java/generated/jooq"
+                    }
+                }
+            }
+        }
+    }
 }
