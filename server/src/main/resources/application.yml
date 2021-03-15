@@ -3,7 +3,7 @@ micronaut:
     name: kadai20200329
 datasources:
   default:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
-    username: postgres
-    password: ''
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
