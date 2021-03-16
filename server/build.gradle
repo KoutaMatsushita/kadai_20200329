@@ -42,6 +42,9 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
+    testImplementation("com.github.database-rider:rider-core:1.23.0")
+    testImplementation("com.github.database-rider:rider-junit5:1.23.0")
+    testImplementation("org.assertj:assertj-core:3.19.0")
 }
 
 
@@ -88,10 +91,11 @@ jooq {
                         includes = ".*"
                         excludes = "flyway_schema_history"
                     }
-                    strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
+                    strategy.name = "org.jooq.codegen.example.JPrefixGeneratorStrategy"
                     generate {
                         deprecated = false
-                        records = true
+                        nullableAnnotation = true
+                        nonnullAnnotation = true
                         immutablePojos = true
                     }
                     target {
