@@ -23,6 +23,14 @@ micronaut {
     }
 }
 
+allOpen {
+    annotations(
+            "io.micronaut.aop.Around",
+            "io.micronaut.http.annotation.Controller",
+            "javax.inject.Singleton"
+    )
+}
+
 dependencies {
     implementation("io.micronaut:micronaut-validation")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
@@ -45,6 +53,7 @@ dependencies {
     testImplementation("com.github.database-rider:rider-core:1.23.0")
     testImplementation("com.github.database-rider:rider-junit5:1.23.0")
     testImplementation("org.assertj:assertj-core:3.19.0")
+    testImplementation("io.mockk:mockk:1.10.6")
 }
 
 
