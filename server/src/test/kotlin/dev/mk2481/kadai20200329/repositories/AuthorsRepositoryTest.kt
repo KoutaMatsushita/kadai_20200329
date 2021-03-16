@@ -6,6 +6,7 @@ import com.github.database.rider.junit5.api.DBRider
 import dev.mk2481.kadai20200329.models.AuthorName
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.jooq.DSLContext
 import org.junit.jupiter.api.Test
 import javax.inject.Inject
@@ -18,36 +19,42 @@ class AuthorsRepositoryTest {
     lateinit var ctx: DSLContext
 
     @Test
+    @DataSet(cleanBefore = true, cleanAfter = true)
     fun create() {
         val repository = AuthorsRepository(ctx)
-        val name = AuthorName("山田太郎")
-        Assertions.assertThat(repository.create(name))
+        val name = AuthorName("author1")
+        assertThat(repository.create(name))
             .isNotNull
-            .extracting { it.name.value }
-            .isEqualTo("山田太郎")
+            .extracting { it.name }
+            .isEqualTo(name)
     }
 
     @Test
     @DataSet("authors.yml", strategy = SeedStrategy.CLEAN_INSERT)
     fun findAll() {
         val repository = AuthorsRepository(ctx)
-        Assertions.assertThat(repository.findAll())
+        assertThat(repository.findAll())
             .isNotEmpty
             .hasSize(2)
             .extracting<String> { it.name.value }
             .containsAll(listOf("山田太郎", "鈴木次郎"))
     }
 
-
     @Test
     @DataSet("authors.yml", strategy = SeedStrategy.CLEAN_INSERT)
     fun findById() {
         val repository = AuthorsRepository(ctx)
-        Assertions.assertThat(repository.findById(1))
+        assertThat(repository.findById(1))
             .isNotNull
             .extracting { it!!.name.value }
             .isEqualTo("山田太郎")
-        Assertions.assertThat(repository.findById(Int.MAX_VALUE))
+    }
+
+    @Test
+    @DataSet("authors.yml", strategy = SeedStrategy.CLEAN_INSERT)
+    fun `findById_見つからない場合はnull`() {
+        val repository = AuthorsRepository(ctx)
+        assertThat(repository.findById(Int.MAX_VALUE))
             .isNull()
     }
 
@@ -59,7 +66,7 @@ class AuthorsRepositoryTest {
         val newName = AuthorName("田中太郎")
         Assertions.assertThatCode { repository.update(author.updateName(newName)) }
             .doesNotThrowAnyException()
-        Assertions.assertThat(repository.findById(1))
+        assertThat(repository.findById(1))
             .isNotNull
             .extracting { it!!.name }
             .isEqualTo(newName)
@@ -71,7 +78,7 @@ class AuthorsRepositoryTest {
         val repository = AuthorsRepository(ctx)
         Assertions.assertThatCode { repository.delete(repository.findById(1)!!) }
             .doesNotThrowAnyException()
-        Assertions.assertThat(repository.findById(1))
+        assertThat(repository.findById(1))
             .isNull()
     }
 }
