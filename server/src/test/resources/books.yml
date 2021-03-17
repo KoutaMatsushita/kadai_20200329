@@ -1,0 +1,10 @@
+books:
+  - id: 1
+    name: book1
+    author_id: 1
+  - id: 2
+    name: book2
+    author_id: 1
+  - id: 3
+    name: book3
+    author_id: 2
