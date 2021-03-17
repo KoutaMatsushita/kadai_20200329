@@ -1,13 +1,13 @@
 package dev.mk2481.kadai20200329.controllers
 
+import dev.mk2481.kadai20200329.controllers.exceptions.BadRequestException
+import dev.mk2481.kadai20200329.controllers.exceptions.NotFoundException
 import dev.mk2481.kadai20200329.controllers.json.AuthorJSON
 import dev.mk2481.kadai20200329.converters.toJSON
 import dev.mk2481.kadai20200329.models.AuthorName
 import dev.mk2481.kadai20200329.repositories.AuthorsRepository
 import io.micronaut.http.HttpResponse
-import io.micronaut.http.HttpStatus
 import io.micronaut.http.annotation.*
-import io.micronaut.http.exceptions.HttpStatusException
 
 @Controller("/api/authors")
 class AuthorController(
@@ -18,7 +18,7 @@ class AuthorController(
 
     @Get("/{id}")
     fun findById(@PathVariable id: Int): AuthorJSON =
-        repository.findById(id)?.toJSON() ?: throw HttpStatusException(HttpStatus.NOT_FOUND, "not found id=${id}")
+        repository.findById(id)?.toJSON() ?: throw NotFoundException("not found id=${id}")
 
     @Post("/")
     fun create(name: String): AuthorJSON {
@@ -28,14 +28,14 @@ class AuthorController(
                     repository.create(it).toJSON()
                 },
                 onFailure = {
-                    throw HttpStatusException(HttpStatus.BAD_REQUEST, it.message)
+                    throw BadRequestException(it.message)
                 }
             )
     }
 
     @Patch("/{id}")
     fun update(@PathVariable id: Int, name: String): HttpResponse<Any> {
-        val author = repository.findById(id) ?: throw HttpStatusException(HttpStatus.NOT_FOUND, "not found id=${id}")
+        val author = repository.findById(id) ?: throw NotFoundException("not found id=${id}")
         return kotlin.runCatching { AuthorName(name) }
             .fold(
                 onSuccess = {
@@ -43,14 +43,14 @@ class AuthorController(
                     HttpResponse.noContent()
                 },
                 onFailure = {
-                    throw HttpStatusException(HttpStatus.BAD_REQUEST, it.message)
+                    throw BadRequestException(it.message)
                 }
             )
     }
 
     @Delete("/{id}")
     fun delete(@PathVariable id: Int): HttpResponse<Any> {
-        val author = repository.findById(id) ?: throw HttpStatusException(HttpStatus.NOT_FOUND, "not found id=${id}")
+        val author = repository.findById(id) ?: throw NotFoundException("not found id=${id}")
         repository.delete(author)
         return HttpResponse.noContent()
     }
