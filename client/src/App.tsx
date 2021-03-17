@@ -1,25 +1,34 @@
+import {Box, Container, Heading, Link, StackDivider, VStack} from "@chakra-ui/react"
+import {IndexPage} from 'pages';
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {BrowserRouter as Router, Link as RouterLink, Route, Switch,} from "react-router-dom";
+import {NotFoundPage} from "./pages/404";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <VStack
+        divider={<StackDivider borderColor="gray.200"/>}
+        spacing={4}
+        padding={4}
+        h="100%"
+        align="stretch"
+      >
+        <Box>
+          <Link>
+            <RouterLink to="/">
+              <Heading size="2xl">Syoseki</Heading>
+            </RouterLink>
+          </Link>
+        </Box>
+        <Container maxW="container.xl" h="100%">
+          <Switch>
+            <Route exact path="/" children={<IndexPage/>}/>
+            <Route children={<NotFoundPage/>}/>
+          </Switch>
+        </Container>
+      </VStack>
+    </Router>
   );
 }
 
