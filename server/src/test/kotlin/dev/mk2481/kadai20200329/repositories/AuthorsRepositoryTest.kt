@@ -73,7 +73,7 @@ class AuthorsRepositoryTest {
     }
 
     @Test
-    @DataSet("authors.yml", strategy = SeedStrategy.CLEAN_INSERT)
+    @DataSet("authors.yml,books.yml", strategy = SeedStrategy.CLEAN_INSERT)
     fun delete() {
         val repository = AuthorsRepository(ctx)
         Assertions.assertThatCode { repository.delete(repository.findById(1)!!) }
