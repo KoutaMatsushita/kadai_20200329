@@ -6,8 +6,14 @@ import org.junit.jupiter.api.Test
 class AuthorTest {
     @Test
     fun updateName() {
-        val author = Author(1, AuthorName("test"))
-        assertThat(author.updateName(AuthorName("newName")))
-            .toString()
+        val oldName = AuthorName("test")
+        val author = Author(1, oldName)
+        val newName = AuthorName("newName")
+        assertThat(author.updateName(newName))
+            .isEqualTo(Author(1, newName))
+            .describedAs("変更されていること")
+        assertThat(author)
+            .isEqualTo(Author(1, oldName))
+            .describedAs("元のインスタンスが変更されていないこと")
     }
 }
