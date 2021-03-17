@@ -5,6 +5,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "6.1.0"
     id("io.micronaut.application") version "1.4.2"
     id("nu.studer.jooq") version "5.2.1"
+    id("org.flywaydb.flyway") version "7.2.1"
 }
 
 version = "0.1"
@@ -81,6 +82,15 @@ tasks {
     }
 }
 
+flyway {
+    driver = "org.postgresql.Driver"
+    url = System.getenv("DATABASE_URL")
+    user = System.getenv("DATABASE_USER")
+    password = System.getenv("DATABASE_PASSWORD")
+    schemas = ["public"]
+    locations = ["classpath:db/migration"]
+}
+
 jooq {
     configurations {
         main {
@@ -115,4 +125,15 @@ jooq {
             }
         }
     }
+}
+
+// jooq コード生成前にマイグレーションを行う。
+// see: https://github.com/etiennestuder/gradle-jooq-plugin/blob/master/example/configure_jooq_with_flyway/build.gradle
+tasks.named('generateJooq').configure {
+    dependsOn tasks.named('flywayMigrate')
+    inputs.files(fileTree('src/main/resources/db/migration'))
+            .withPropertyName('migrations')
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    allInputsDeclared = true
+    outputs.cacheIf { true }
 }
