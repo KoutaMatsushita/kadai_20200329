@@ -55,6 +55,25 @@ class BooksRepositoryTest {
 
     @Test
     @DataSet("authors.yml,books.yml", strategy = SeedStrategy.CLEAN_INSERT)
+    fun findByAuthor() {
+        val repository = BooksRepository(ctx)
+        val author1 = AuthorsRepository(ctx).findById(1)!!
+        assertThat(repository.findByAuthor(author1))
+            .isNotEmpty
+            .hasSize(2)
+            .extracting<String> { it.name.value }
+            .containsAll(listOf("book1", "book2"))
+
+        val author2 = AuthorsRepository(ctx).findById(2)!!
+        assertThat(repository.findByAuthor(author2))
+            .isNotEmpty
+            .hasSize(1)
+            .extracting<String> { it.name.value }
+            .containsAll(listOf("book3"))
+    }
+
+    @Test
+    @DataSet("authors.yml,books.yml", strategy = SeedStrategy.CLEAN_INSERT)
     fun findById() {
         val repository = BooksRepository(ctx)
         assertThat(repository.findById(1))
