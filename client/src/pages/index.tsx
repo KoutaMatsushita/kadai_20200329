@@ -1,9 +1,10 @@
-import {Center, Spinner, StackDivider, Text, VStack} from "@chakra-ui/react"
+import {StackDivider, Text, VStack} from "@chakra-ui/react"
 import React, {useCallback} from "react";
 import {useHistory} from "react-router";
 import useSWR from "swr";
 import {fetcher} from "util/fetcher";
 import {Book} from "../@types/api";
+import {LargeProgress} from "../components/LargeProgress";
 
 const BookItem: React.FC<{ book: Book, onClick: (book: Book) => void }> = ({book, onClick}) => {
   const _onClick = useCallback(() => {
@@ -34,15 +35,7 @@ export const IndexPage: React.FC = () => {
   }, [])
 
   if (!data) {
-    return (
-      <Center h="100%">
-        <Spinner
-          thickness="4px"
-          speed="1s"
-          size="xl"
-        />
-      </Center>
-    )
+    return <LargeProgress/>
   }
 
   return (
