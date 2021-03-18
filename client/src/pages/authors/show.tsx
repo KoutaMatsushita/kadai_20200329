@@ -81,7 +81,7 @@ const AuthorForm: React.FC<{
               <Input
                 type="text"
                 isRequired
-                placeholder="input book name"
+                placeholder="input author name"
                 value={authorName}
                 onChange={(e) => setAuthorName(e.currentTarget.value)}
               />
