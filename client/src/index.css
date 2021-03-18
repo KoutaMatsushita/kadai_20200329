@@ -7,7 +7,8 @@ html {
   block-size: 100%;
 }
 
-body, #root {
+body,
+#root {
   min-block-size: 100%;
   font-family: system-ui, sans-serif;
   height: 100vh;
