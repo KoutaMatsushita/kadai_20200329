@@ -15,6 +15,7 @@ import {
   Switch,
 } from "react-router-dom";
 import { NotFoundPage } from "./pages/404";
+import { AuthorShowPage } from "./pages/authors/show";
 import { BookShowPage } from "./pages/books/show";
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
           <Switch>
             <Route exact path="/" children={<IndexPage />} />
             <Route path="/books/:id" children={<BookShowPage />} />
+            <Route path="/authors/:id" children={<AuthorShowPage />} />
             <Route path="*" children={<NotFoundPage />} />
           </Switch>
         </Container>
