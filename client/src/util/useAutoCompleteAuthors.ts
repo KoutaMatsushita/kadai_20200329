@@ -30,6 +30,7 @@ export const useAutoCompleteAuthors = ({
       }
     })().map((author: Author) => ({ id: author.id, text: author.name }));
     setAutoCompleteAuthors(items);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(_authors), authorName]);
 
   return {

@@ -122,7 +122,7 @@ export const AuthorShowPage: React.FC = () => {
         alert(`Delete failure: ${e.message}`);
       }
     },
-    [id]
+    [id, history]
   );
 
   if (error) {

@@ -1,7 +1,7 @@
 import { StackDivider, Text, VStack } from "@chakra-ui/react";
 import React, { useCallback } from "react";
 import useSWR from "swr";
-import { Author, Book } from "../@types/api";
+import { Author } from "../@types/api";
 import { fetcher } from "../util/fetcher";
 import { LargeProgress } from "./LargeProgress";
 
@@ -11,7 +11,7 @@ const AuthorItem: React.FC<{
 }> = ({ author, onClick }) => {
   const _onClick = useCallback(() => {
     onClick(author);
-  }, [author.id]);
+  }, [author, onClick]);
 
   return (
     <Text

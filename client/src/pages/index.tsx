@@ -1,12 +1,4 @@
-import { AddIcon } from "@chakra-ui/icons";
-import {
-  Button,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from "@chakra-ui/react";
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import React, { useCallback } from "react";
 import { useHistory } from "react-router";
 import useSWR from "swr";

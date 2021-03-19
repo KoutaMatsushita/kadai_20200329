@@ -2,7 +2,6 @@ import {
   Box,
   Container,
   Heading,
-  Link,
   StackDivider,
   VStack,
 } from "@chakra-ui/react";

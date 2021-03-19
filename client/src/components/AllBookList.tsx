@@ -11,7 +11,7 @@ const BookItem: React.FC<{ book: Book; onClick: (book: Book) => any }> = ({
 }) => {
   const _onClick = useCallback(() => {
     onClick(book);
-  }, [book.id]);
+  }, [book, onClick]);
 
   return (
     <VStack

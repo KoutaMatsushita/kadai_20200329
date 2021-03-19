@@ -10,14 +10,11 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import ky from "ky";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useHistory, useParams } from "react-router";
 import useSWR, { mutate } from "swr";
 import { Author, Book } from "../../@types/api";
-import {
-  AutoCompleteInput,
-  AutoCompleteInputItem,
-} from "../../components/AutoCompleteInput";
+import { AutoCompleteInput } from "../../components/AutoCompleteInput";
 import { LargeProgress } from "../../components/LargeProgress";
 import { fetcher } from "../../util/fetcher";
 import { useAutoCompleteAuthors } from "../../util/useAutoCompleteAuthors";
@@ -154,7 +151,7 @@ export const BookShowPage: React.FC = () => {
         alert(`Delete failure: ${e.message}`);
       }
     },
-    [id]
+    [id, history]
   );
 
   if (error) {
