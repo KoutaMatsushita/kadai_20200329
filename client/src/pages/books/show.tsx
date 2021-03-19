@@ -20,6 +20,7 @@ import {
 } from "../../components/AutoCompleteInput";
 import { LargeProgress } from "../../components/LargeProgress";
 import { fetcher } from "../../util/fetcher";
+import { useAutoCompleteAuthors } from "../../util/useAutoCompleteAuthors";
 import { NotFoundPage } from "../404";
 
 const BookForm: React.FC<{
@@ -32,12 +33,14 @@ const BookForm: React.FC<{
   const [bookName, setBookName] = useControllableState({
     defaultValue: book.name,
   });
-  const [authorName, setAuthorName] = useControllableState({
-    defaultValue: book.author.name,
+  const {
+    authorName,
+    setAuthorName,
+    autoCompleteAuthors,
+  } = useAutoCompleteAuthors({
+    defaultValue: book.name,
+    fetcher: () => Promise.resolve(authors),
   });
-  const [autoCompleteAuthors, setAutoCompleteAuthors] = useState<
-    AutoCompleteInputItem[]
-  >([]);
 
   const _onSubmit = useCallback(async () => {
     await onSubmit({ ...book, name: bookName });
@@ -47,17 +50,6 @@ const BookForm: React.FC<{
   const _onDelete = useCallback(async () => {
     onDelete(book);
   }, [book, onDelete]);
-
-  useEffect(() => {
-    const items = (() => {
-      if (authorName.length === 0) {
-        return authors;
-      } else {
-        return authors.filter((author) => author.name.startsWith(authorName));
-      }
-    })().map((author: Author) => ({ id: author.id, text: author.name }));
-    setAutoCompleteAuthors(items);
-  }, [...authors, authorName]);
 
   return (
     <VStack spacing={8} align="stretch">
