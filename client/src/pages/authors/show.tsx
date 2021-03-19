@@ -51,6 +51,7 @@ const AuthorForm: React.FC<{
                 leftIcon={<CheckIcon />}
                 colorScheme="teal"
                 onClick={() => _onSubmit()}
+                disabled={!authorName}
               >
                 Save
               </Button>

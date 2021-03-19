@@ -30,19 +30,26 @@ const BookForm: React.FC<{
   const [bookName, setBookName] = useControllableState({
     defaultValue: book.name,
   });
+  const [authorId, setAuthorId] = useState<string | number | null>(
+    book.author.id
+  );
   const {
     authorName,
     setAuthorName,
     autoCompleteAuthors,
   } = useAutoCompleteAuthors({
-    defaultValue: book.name,
+    defaultValue: book.author.name,
     fetcher: () => Promise.resolve(authors),
   });
 
   const _onSubmit = useCallback(async () => {
-    await onSubmit({ ...book, name: bookName });
+    await onSubmit({
+      ...book,
+      name: bookName,
+      author: { ...book.author, id: Number(authorId) },
+    });
     setEditable(false);
-  }, [book, bookName, onSubmit]);
+  }, [book, bookName, authorId, onSubmit]);
 
   const _onDelete = useCallback(async () => {
     onDelete(book);
@@ -63,6 +70,7 @@ const BookForm: React.FC<{
                 leftIcon={<CheckIcon />}
                 colorScheme="teal"
                 onClick={() => _onSubmit()}
+                disabled={!bookName || !authorId}
               >
                 Save
               </Button>
@@ -109,9 +117,15 @@ const BookForm: React.FC<{
                 isRequired
                 placeholder="input author name"
                 value={authorName}
-                onChange={(e) => setAuthorName(e.target.value)}
+                onChange={(e) => {
+                  setAuthorName(e.target.value);
+                  setAuthorId(null);
+                }}
                 autoCompleteItems={autoCompleteAuthors}
-                onSelectItem={(item) => setAuthorName(item.text)}
+                onSelectItem={(item) => {
+                  setAuthorName(item.text);
+                  setAuthorId(item.id);
+                }}
               />
             ) : (
               <Text>{book.author.name}</Text>
