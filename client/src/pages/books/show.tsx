@@ -5,6 +5,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Link,
   Text,
   useControllableState,
   VStack,
@@ -12,6 +13,7 @@ import {
 import ky from "ky";
 import React, { useCallback, useState } from "react";
 import { useHistory, useParams } from "react-router";
+import { Link as RouterLink } from "react-router-dom";
 import useSWR, { mutate } from "swr";
 import { Author, Book } from "../../@types/api";
 import { AutoCompleteInput } from "../../components/AutoCompleteInput";
@@ -95,8 +97,8 @@ const BookForm: React.FC<{
           )}
         </ButtonGroup>
         <VStack spacing={8} align="stretch" pt={8}>
-          <FormControl id="title">
-            <FormLabel>Title</FormLabel>
+          <FormControl id="name">
+            <FormLabel>Name</FormLabel>
             {editable ? (
               <Input
                 type="text"
@@ -128,7 +130,9 @@ const BookForm: React.FC<{
                 }}
               />
             ) : (
-              <Text>{book.author.name}</Text>
+              <Link as={RouterLink} to={`/authors/${book.author.id}`}>
+                <Text>{book.author.name}</Text>
+              </Link>
             )}
           </FormControl>
         </VStack>
