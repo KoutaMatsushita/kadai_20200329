@@ -84,7 +84,7 @@ tasks {
 
 flyway {
     driver = "org.postgresql.Driver"
-    url = System.getenv("DATABASE_URL")
+    url = System.getenv("JDBC_DATABASE_URL")
     user = System.getenv("DATABASE_USER")
     password = System.getenv("DATABASE_PASSWORD")
     schemas = ["public"]
@@ -98,7 +98,7 @@ jooq {
                 logging = org.jooq.meta.jaxb.Logging.INFO
                 jdbc {
                     driver = "org.postgresql.Driver"
-                    url = System.getenv("DATABASE_URL")
+                    url = System.getenv("JDBC_DATABASE_URL")
                     user = System.getenv("DATABASE_USER")
                     password = System.getenv("DATABASE_PASSWORD")
                 }
