@@ -5,6 +5,15 @@ const theme = extendTheme({
     initialColorMode: "light",
     useSystemColorMode: true,
   },
+  components: {
+    Link: {
+      baseStyle: {
+        _hover: {
+          color: "teal.500",
+        },
+      },
+    },
+  },
 });
 
 export default theme;
