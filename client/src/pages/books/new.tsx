@@ -51,7 +51,7 @@ export const BookNewPage: React.FC = () => {
       >
         <VStack spacing={8}>
           <FormControl id="name">
-            <FormLabel>name</FormLabel>
+            <FormLabel>Name</FormLabel>
             <Input
               type="text"
               isRequired
@@ -61,7 +61,7 @@ export const BookNewPage: React.FC = () => {
             />
           </FormControl>
           <FormControl id="author">
-            <FormLabel>author</FormLabel>
+            <FormLabel>Author</FormLabel>
             <AutoCompleteInput
               type="text"
               isRequired

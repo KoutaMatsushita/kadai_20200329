@@ -76,8 +76,8 @@ const AuthorForm: React.FC<{
           )}
         </ButtonGroup>
         <VStack spacing={8} align="stretch" pt={8}>
-          <FormControl id="title">
-            <FormLabel>Title</FormLabel>
+          <FormControl id="name">
+            <FormLabel>Name</FormLabel>
             {editable ? (
               <Input
                 type="text"
