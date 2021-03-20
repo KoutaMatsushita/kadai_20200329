@@ -147,7 +147,7 @@ export const AuthorShowPage: React.FC = () => {
     (book: Book) => {
       history.push(`/books/${book.id}`);
     },
-    [id, history]
+    [history]
   );
 
   if (error) {
