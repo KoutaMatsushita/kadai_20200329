@@ -5,6 +5,8 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Link,
+  StackDivider,
   Text,
   useControllableState,
   VStack,
@@ -13,16 +15,18 @@ import ky from "ky";
 import React, { useCallback, useState } from "react";
 import { useHistory, useParams } from "react-router";
 import useSWR, { mutate } from "swr";
-import { Author } from "../../@types/api";
+import { Author, Book } from "../../@types/api";
 import { LargeProgress } from "../../components/LargeProgress";
 import { fetcher } from "../../util/fetcher";
 import { NotFoundPage } from "../404";
 
 const AuthorForm: React.FC<{
   author: Author;
+  books: Book[];
   onSubmit: (author: Author) => any;
   onDelete: (author: Author) => any;
-}> = ({ author, onSubmit, onDelete }) => {
+  onBookClick: (book: Book) => any;
+}> = ({ author, books, onSubmit, onDelete, onBookClick }) => {
   const [editable, setEditable] = useState(false);
   const [authorName, setAuthorName] = useControllableState({
     defaultValue: author.name,
@@ -92,6 +96,18 @@ const AuthorForm: React.FC<{
           </FormControl>
         </VStack>
       </form>
+      <Text>Books</Text>
+      <VStack
+        align="stretch"
+        spacing={4}
+        divider={<StackDivider borderColor="gray.100" />}
+      >
+        {books.map((book) => (
+          <Link onClick={() => onBookClick(book)}>
+            <Text>{book.name}</Text>
+          </Link>
+        ))}
+      </VStack>
     </VStack>
   );
 };
@@ -100,6 +116,7 @@ export const AuthorShowPage: React.FC = () => {
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
   const { data: author, error } = useSWR<Author>(`/api/authors/${id}`, fetcher);
+  const { data: books } = useSWR<Book[]>(`/api/books?authorId=${id}`, fetcher);
 
   const onSubmit = useCallback(
     async (author: Author) => {
@@ -126,6 +143,13 @@ export const AuthorShowPage: React.FC = () => {
     [id, history]
   );
 
+  const onBookClick = useCallback(
+    (book: Book) => {
+      history.push(`/books/${book.id}`);
+    },
+    [id, history]
+  );
+
   if (error) {
     switch (error?.response?.status) {
       case 404:
@@ -134,9 +158,17 @@ export const AuthorShowPage: React.FC = () => {
         return <NotFoundPage />; // TODO: ちゃんとやる
     }
   }
-  if (!author) {
+  if (!author || !books) {
     return <LargeProgress />;
   }
 
-  return <AuthorForm author={author} onSubmit={onSubmit} onDelete={onDelete} />;
+  return (
+    <AuthorForm
+      author={author}
+      books={books}
+      onSubmit={onSubmit}
+      onDelete={onDelete}
+      onBookClick={onBookClick}
+    />
+  );
 };
