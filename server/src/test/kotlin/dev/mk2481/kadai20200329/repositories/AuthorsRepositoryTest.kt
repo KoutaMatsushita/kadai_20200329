@@ -35,9 +35,20 @@ class AuthorsRepositoryTest {
         val repository = AuthorsRepository(ctx)
         assertThat(repository.findAll())
             .isNotEmpty
+            .hasSize(3)
+            .extracting<String> { it.name.value }
+            .containsAll(listOf("山田太郎", "鈴木次郎", "山本三郎"))
+    }
+
+    @Test
+    @DataSet("authors.yml", strategy = SeedStrategy.CLEAN_INSERT)
+    fun findByName() {
+        val repository = AuthorsRepository(ctx)
+        assertThat(repository.findAll(searchName = "山"))
+            .isNotEmpty
             .hasSize(2)
             .extracting<String> { it.name.value }
-            .containsAll(listOf("山田太郎", "鈴木次郎"))
+            .containsAll(listOf("山田太郎", "山本三郎"))
     }
 
     @Test

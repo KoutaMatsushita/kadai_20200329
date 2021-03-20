@@ -13,8 +13,8 @@ import io.micronaut.http.annotation.*
 class AuthorController(
     private val repository: AuthorsRepository
 ) {
-    @Get("/")
-    fun index(): List<AuthorJSON> = repository.findAll().map { it.toJSON() }
+    @Get("/{?q}")
+    fun index(q: String?): List<AuthorJSON> = repository.findAll(searchName = q).map { it.toJSON() }
 
     @Get("/{id}")
     fun findById(@PathVariable id: Int): AuthorJSON =

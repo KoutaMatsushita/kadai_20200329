@@ -15,12 +15,12 @@ class BookController(
     private val booksRepository: BooksRepository,
     private val authorsRepository: AuthorsRepository
 ) {
-    @Get("/{?authorId}")
-    fun index(authorId: Int?): List<BookJSON> = if (authorId == null) {
-        booksRepository.findAll().map { it.toJSON() }
+    @Get("/{?authorId,q}")
+    fun index(authorId: Int?, q: String?): List<BookJSON> = if (authorId == null) {
+        booksRepository.findAll(searchName = q).map { it.toJSON() }
     } else {
         val author = authorsRepository.findById(authorId) ?: throw NotFoundException("author not found id=${authorId}")
-        booksRepository.findByAuthor(author).map { it.toJSON() }
+        booksRepository.findAll(searchName = q, author = author).map { it.toJSON() }
     }
 
     @Get("/{id}")

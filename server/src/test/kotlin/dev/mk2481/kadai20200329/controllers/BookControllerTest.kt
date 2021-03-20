@@ -16,8 +16,10 @@ import io.micronaut.http.client.annotation.Client
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -55,13 +57,45 @@ class BookControllerTest {
         val author = mockAuthors.first()
         val books = mockBooks.filter { it.author == author }
         every { mockAuthorsRepository.findById(1) } returns author
-        every { mockBooksRepository.findByAuthor(author) } returns books
+        every { mockBooksRepository.findAll(author = author) } returns books
 
         val result: List<BookJSON> =
             client.toBlocking().retrieve(HttpRequest.GET<Any>("/?authorId=1"), Argument.listOf(BookJSON::class.java))
         Assertions.assertThat(result)
             .isNotEmpty
             .containsAll(books.map { it.toJSON() })
+    }
+
+    @Test
+    fun findByName() {
+        val books = listOf(mockBooks.first())
+        every { mockBooksRepository.findAll(searchName = "book1") } returns books
+
+        val result: List<BookJSON> =
+            client.toBlocking().retrieve(HttpRequest.GET<Any>("/?q=book1"), Argument.listOf(BookJSON::class.java))
+        Assertions.assertThat(result)
+            .isNotEmpty
+            .containsAll(books.map { it.toJSON() })
+
+        verify { mockBooksRepository.findAll(searchName = "book1") }
+        confirmVerified(mockBooksRepository)
+    }
+
+    @Test
+    fun findByNameAndAuthor() {
+        val author = mockAuthors.first()
+        val books = mockBooks.filter { it.author == author }
+        every { mockAuthorsRepository.findById(1) } returns author
+        every { mockBooksRepository.findAll(searchName = "book1", author = author) } returns books
+
+        val result: List<BookJSON> =
+            client.toBlocking().retrieve(HttpRequest.GET<Any>("/?q=book1&authorId=1"), Argument.listOf(BookJSON::class.java))
+        Assertions.assertThat(result)
+            .isNotEmpty
+            .containsAll(books.map { it.toJSON() })
+
+        verify { mockBooksRepository.findAll(searchName = "book1", author = author) }
+        confirmVerified(mockBooksRepository)
     }
 
     @Test

@@ -8,3 +8,6 @@ books:
   - id: 3
     name: book3
     author_id: 2
+  - id: 4
+    name: 本
+    author_id: 1
