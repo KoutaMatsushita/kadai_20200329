@@ -1,6 +1,6 @@
 package dev.mk2481.kadai20200329.controllers
 
-import io.micronaut.core.io.ResourceResolver
+import io.micronaut.core.io.ResourceLoader
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
@@ -12,18 +12,18 @@ import java.util.*
  */
 @Controller
 class ClientForwardController(
-    private val resourceResolver: ResourceResolver
+    private val resourceLoader: ResourceLoader
 ) {
     @Get(value = "/", produces = [MediaType.TEXT_HTML])
     fun index(): StreamedFile =
-        resourceResolver.getResource("classpath:public/index.html")
+        resourceLoader.getResource("classpath:public/index.html")
             .toNullable()
             ?.let { StreamedFile(it) }
             ?: throw Exception("not found index.html")
 
     @Get(value = "/{path:^(?!.*/api/?).*$}", produces = [MediaType.TEXT_HTML])
     fun forward(path: String): StreamedFile =
-        resourceResolver.getResource("classpath:public/${path}").toNullable()
+        resourceLoader.getResource("classpath:public/${path}").toNullable()
             ?.let { StreamedFile(it) }
             ?: index()
 }
