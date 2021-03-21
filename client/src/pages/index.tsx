@@ -1,16 +1,66 @@
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import {
+  HStack,
+  Input,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  useControllableState,
+} from "@chakra-ui/react";
 import React, { useCallback } from "react";
 import { useHistory } from "react-router";
-import useSWR from "swr";
-import { fetcher } from "util/fetcher";
 import { Author, Book } from "../@types/api";
 import { AddButton } from "../components/AddButton";
 import { AllAuthorList } from "../components/AllAuthorList";
 import { AllBookList } from "../components/AllBookList";
-import { LargeProgress } from "../components/LargeProgress";
+
+const BooksTab: React.FC<{
+  onAddBook: () => any;
+  onBookClick: (book: Book) => any;
+}> = ({ onAddBook, onBookClick }) => {
+  const [bookSearchName, setBookSearchName] = useControllableState({
+    defaultValue: "",
+  });
+  return (
+    <>
+      <HStack mb={4} spacing={8}>
+        <AddButton mt={4} onClick={onAddBook} />
+        <Input
+          placeholder="input search book name"
+          value={bookSearchName}
+          onChange={(e) => setBookSearchName(e.target.value)}
+        />
+      </HStack>
+      <AllBookList onClick={onBookClick} searchName={bookSearchName} />
+    </>
+  );
+};
+
+const AuthorsTab: React.FC<{
+  onAddAuthor: () => any;
+  onAuthorClick: (author: Author) => any;
+}> = ({ onAddAuthor, onAuthorClick }) => {
+  const [authorSearchName, setAuthorSearchName] = useControllableState({
+    defaultValue: "",
+  });
+
+  return (
+    <>
+      <HStack mb={4} spacing={8}>
+        <AddButton mt={4} onClick={onAddAuthor} />
+        <Input
+          placeholder="input search author name"
+          value={authorSearchName}
+          onChange={(e) => setAuthorSearchName(e.target.value)}
+        />
+      </HStack>
+      <AllAuthorList onClick={onAuthorClick} searchName={authorSearchName} />
+    </>
+  );
+};
 
 export const IndexPage: React.FC = () => {
-  const { data } = useSWR<Book[]>("/api/books", fetcher);
   const history = useHistory();
   const onBookClick = useCallback(
     (book: Book) => {
@@ -25,10 +75,6 @@ export const IndexPage: React.FC = () => {
     [history]
   );
 
-  if (!data) {
-    return <LargeProgress />;
-  }
-
   return (
     <Tabs isFitted>
       <TabList>
@@ -37,12 +83,16 @@ export const IndexPage: React.FC = () => {
       </TabList>
       <TabPanels>
         <TabPanel>
-          <AddButton onClick={() => history.push("/books/new")} />
-          <AllBookList onClick={onBookClick} />
+          <BooksTab
+            onAddBook={() => history.push("/books/new")}
+            onBookClick={onBookClick}
+          />
         </TabPanel>
         <TabPanel>
-          <AddButton onClick={() => history.push("/authors/new")} />
-          <AllAuthorList onClick={onAuthorClick} />
+          <AuthorsTab
+            onAddAuthor={() => history.push("/authors/new")}
+            onAuthorClick={onAuthorClick}
+          />
         </TabPanel>
       </TabPanels>
     </Tabs>

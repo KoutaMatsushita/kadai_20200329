@@ -13,11 +13,15 @@ import io.micronaut.http.client.annotation.Client
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import java.net.URI
+import java.net.URLEncoder
 import javax.inject.Inject
 
 @MicronautTest
@@ -41,6 +45,21 @@ class AuthorControllerTest {
         assertThat(result)
             .isNotEmpty
             .containsAll(mockAuthors.map { it.toJSON() })
+    }
+
+    @Test
+    fun findByName() {
+        val authors = listOf(Author(100, AuthorName("山田太郎")))
+        every { mockRepository.findAll(searchName = "山") } returns authors
+
+        val result: List<AuthorJSON> =
+            client.toBlocking().retrieve(HttpRequest.GET<Any>("/?q=${URLEncoder.encode("山", "UTF-8")}"), Argument.listOf(AuthorJSON::class.java))
+        assertThat(result)
+            .isNotEmpty
+            .containsAll(authors.map { it.toJSON() })
+
+        verify { mockRepository.findAll(searchName = "山") }
+        confirmVerified(mockRepository)
     }
 
     @Test

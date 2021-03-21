@@ -14,21 +14,21 @@ export const useAutoCompleteAuthors = ({
   fetcher,
   defaultValue,
 }: useAutoCompleteAuthorsArgs) => {
-  const { data: authors } = useSWR<Author[]>("/api/authors", fetcher);
   const [authorName, setAuthorName] = useControllableState({ defaultValue });
+  const { data: authors } = useSWR<Author[]>(
+    `/api/authors?q=${authorName}`,
+    fetcher
+  );
   const [autoCompleteAuthors, setAutoCompleteAuthors] = useState<
     AutoCompleteInputItem[]
   >([]);
   const _authors = authors || [];
 
   useEffect(() => {
-    const items = (() => {
-      if (authorName.length === 0) {
-        return _authors;
-      } else {
-        return _authors.filter((author) => author.name.startsWith(authorName));
-      }
-    })().map((author: Author) => ({ id: author.id, text: author.name }));
+    const items = _authors.map((author: Author) => ({
+      id: author.id,
+      text: author.name,
+    }));
     setAutoCompleteAuthors(items);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(_authors), authorName]);

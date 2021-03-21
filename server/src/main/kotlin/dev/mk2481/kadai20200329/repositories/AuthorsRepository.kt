@@ -21,9 +21,14 @@ class AuthorsRepository(
             .toModel()
     }
 
-    fun findAll(): List<Author> {
+    fun findAll(searchName: String? = null): List<Author> {
         return dslContext.select()
             .from(AUTHORS)
+            .apply {
+                if (!searchName.isNullOrBlank()) {
+                    where(AUTHORS.NAME.likeIgnoreCase("${searchName}%"))
+                }
+            }
             .fetchInto(JAuthors::class.java)
             .map { it.toModel() }
     }

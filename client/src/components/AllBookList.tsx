@@ -32,10 +32,14 @@ const BookItem: React.FC<{ book: Book; onClick: (book: Book) => any }> = ({
   );
 };
 
-export const AllBookList: React.FC<{ onClick: (book: Book) => any }> = ({
-  onClick,
-}) => {
-  const { data } = useSWR<Book[]>("/api/books", fetcher);
+export const AllBookList: React.FC<{
+  onClick: (book: Book) => any;
+  searchName?: string;
+}> = ({ onClick, searchName }) => {
+  const { data } = useSWR<Book[]>(
+    searchName ? `/api/books?q=${searchName}` : "/api/books",
+    fetcher
+  );
 
   if (!data) {
     return <LargeProgress />;

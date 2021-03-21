@@ -24,13 +24,18 @@ class BooksRepository(
             .let { findById(it)!! }
     }
 
-    fun findAll(): List<Book> {
-        return findQuery()
-            .fetch { it.toBookModel() }
-    }
-
-    fun findByAuthor(author: Author): List<Book> {
-        return findQuery { where(Tables.BOOKS.AUTHOR_ID.eq(author.id)) }
+    fun findAll(searchName: String? = null, author: Author? = null): List<Book> {
+        return findQuery {
+            apply {
+                if (!searchName.isNullOrBlank()) {
+                    where(Tables.BOOKS.NAME.likeIgnoreCase("${searchName}%"))
+                }
+            }.apply {
+                if (author != null) {
+                    where(Tables.BOOKS.AUTHOR_ID.eq(author.id))
+                }
+            }
+        }
             .fetch { it.toBookModel() }
     }
 

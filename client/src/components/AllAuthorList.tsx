@@ -24,10 +24,14 @@ const AuthorItem: React.FC<{
   );
 };
 
-export const AllAuthorList: React.FC<{ onClick: (author: Author) => any }> = ({
-  onClick,
-}) => {
-  const { data } = useSWR<Author[]>("/api/authors", fetcher);
+export const AllAuthorList: React.FC<{
+  onClick: (author: Author) => any;
+  searchName?: string;
+}> = ({ onClick, searchName }) => {
+  const { data } = useSWR<Author[]>(
+    searchName ? `/api/authors?q=${searchName}` : "/api/authors",
+    fetcher
+  );
   if (!data) {
     return <LargeProgress />;
   }
@@ -35,7 +39,7 @@ export const AllAuthorList: React.FC<{ onClick: (author: Author) => any }> = ({
   return (
     <VStack align="stretch" divider={<StackDivider borderColor="gray.100" />}>
       {data.map((author) => (
-        <AuthorItem author={author} onClick={onClick} />
+        <AuthorItem key={author.id} author={author} onClick={onClick} />
       ))}
     </VStack>
   );

@@ -7,7 +7,6 @@ import dev.mk2481.kadai20200329.models.Author
 import dev.mk2481.kadai20200329.models.AuthorName
 import dev.mk2481.kadai20200329.models.BookName
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.*
 import org.jooq.DSLContext
 import org.jooq.exception.DataAccessException
@@ -48,9 +47,9 @@ class BooksRepositoryTest {
         val repository = BooksRepository(ctx)
         assertThat(repository.findAll())
             .isNotEmpty
-            .hasSize(3)
+            .hasSize(4)
             .extracting<String> { it.name.value }
-            .containsAll(listOf("book1", "book2", "book3"))
+            .containsAll(listOf("book1", "book2", "book3", "本"))
     }
 
     @Test
@@ -58,18 +57,41 @@ class BooksRepositoryTest {
     fun findByAuthor() {
         val repository = BooksRepository(ctx)
         val author1 = AuthorsRepository(ctx).findById(1)!!
-        assertThat(repository.findByAuthor(author1))
+        assertThat(repository.findAll(author = author1))
             .isNotEmpty
-            .hasSize(2)
+            .hasSize(3)
             .extracting<String> { it.name.value }
-            .containsAll(listOf("book1", "book2"))
+            .containsAll(listOf("book1", "book2", "本"))
 
         val author2 = AuthorsRepository(ctx).findById(2)!!
-        assertThat(repository.findByAuthor(author2))
+        assertThat(repository.findAll(author = author2))
             .isNotEmpty
             .hasSize(1)
             .extracting<String> { it.name.value }
             .containsAll(listOf("book3"))
+    }
+
+    @Test
+    @DataSet("authors.yml,books.yml", strategy = SeedStrategy.CLEAN_INSERT)
+    fun findByName() {
+        val repository = BooksRepository(ctx)
+        assertThat(repository.findAll(searchName = "book"))
+            .isNotEmpty
+            .hasSize(3)
+            .extracting<String> { it.name.value }
+            .containsAll(listOf("book1", "book2", "book3"))
+    }
+
+    @Test
+    @DataSet("authors.yml,books.yml", strategy = SeedStrategy.CLEAN_INSERT)
+    fun findByNameAndAuthor() {
+        val repository = BooksRepository(ctx)
+        val author1 = AuthorsRepository(ctx).findById(1)!!
+        assertThat(repository.findAll(searchName = "book", author = author1))
+            .isNotEmpty
+            .hasSize(2)
+            .extracting<String> { it.name.value }
+            .containsAll(listOf("book1", "book2"))
     }
 
     @Test
